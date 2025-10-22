@@ -66,25 +66,13 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
-        .sheath-label.ananda {
-            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        }
-        
-        .sheath-label.vijnana {
-            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
-        }
-        
-        .sheath-label.mano {
-            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
-        }
-        
-        .sheath-label.prana {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-        
-        .sheath-label.anna {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-        }
+        /* --- NEW COLORS START --- */
+        .sheath-label.ananda { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); } /* Gold to Orange */
+        .sheath-label.vijnana { background: linear-gradient(135deg, #8A2BE2 0%, #DA70D6 100%); } /* Violet to Orchid */
+        .sheath-label.mano { background: linear-gradient(135deg, #1E90FF 0%, #87CEEB 100%); } /* Dodger Blue to Sky Blue */
+        .sheath-label.prana { background: linear-gradient(135deg, #32CD32 0%, #00FA9A 100%); } /* Lime Green to Spring Green */
+        .sheath-label.anna { background: linear-gradient(135deg, #CD5C5C 0%, #F08080 100%); } /* Indian Red to Light Coral */
+        /* --- NEW COLORS END --- */
         
         .devanagari {
             font-size: 0.9em;
@@ -292,100 +280,163 @@
     </div>
     
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Get all canvases and contexts
-            const harmoniousCanvas = document.getElementById('harmonious-canvas');
-            const hCtx = harmoniousCanvas.getContext('2d');
-            
-            const partialCanvas = document.getElementById('partial-canvas');
-            const pCtx = partialCanvas.getContext('2d');
-            
-            const misalignedCanvas = document.getElementById('misaligned-canvas');
-            const mCtx = misalignedCanvas.getContext('2d');
+    function animateWaves(canvasId, type) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return; // Add check
+        const ctx = canvas.getContext('2d');
 
-            // Colors from the legend
-            const colors = {
-                ananda: '#f6d365',
-                vijnana: '#84fab0',
-                mano: '#5ca3d9',
-                prana: '#00d4ff',
-                anna: '#38f9d7'
-            };
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
 
-            // Reusable function to draw a single wave
-            function drawWave(ctx, width, height, offset, amplitude, frequency, phaseShift, color, lineWidth) {
-                const centerY = height / 2;
-                ctx.beginPath();
-                ctx.strokeStyle = color;
-                ctx.lineWidth = lineWidth;
+        const width = canvas.width;
+        const height = canvas.height;
+        const centerY = height / 2;
+
+        /* --- NEW COLORS START --- */
+        const colors = {
+            ananda: '#FFD700',   // Gold
+            vijnana: '#8A2BE2', // Blue-Violet
+            mano: '#1E90FF',    // Dodger Blue
+            prana: '#32CD32',   // Lime Green
+            anna: '#CD5C5C'     // Indian Red
+        };
+        /* --- NEW COLORS END --- */
+
+
+        // Clear existing waves if any (for resize)
+        if (!window.waves) {
+            window.waves = {};
+        }
+        window.waves[canvasId] = [];
+        const waves = window.waves[canvasId];
+        
+        // Cancel previous animation frame to prevent duplicates on resize
+        if (window.animationFrameIds && window.animationFrameIds[canvasId]) {
+            cancelAnimationFrame(window.animationFrameIds[canvasId]);
+        }
+        if (!window.animationFrameIds) {
+            window.animationFrameIds = {};
+        }
+
+
+        if (type === 'harmonious') {
+            const baseFreq = 0.02;
+            let i = 0;
+            for (const color of Object.values(colors)) {
+                waves.push({
+                    offset: -60 + i * 30,
+                    amplitude: 18,
+                    frequency: baseFreq,
+                    phase: 0,
+                    color,
+                    speed: 0.03
+                });
+                i++;
+            }
+        } else if (type === 'partial') {
+            const baseFreq = 0.02;
+            let i = 0;
+            for (const colorKey in colors) {
+                const color = colors[colorKey];
+                const synced = i < 2;
+                waves.push({
+                    offset: -60 + i * 30,
+                    amplitude: synced ? 16 : 20 + Math.random() * 5,
+                    frequency: synced ? baseFreq : baseFreq * (0.9 + Math.random() * 0.3),
+                    phase: synced ? 0 : Math.random() * Math.PI * 2,
+                    color,
+                    speed: synced ? 0.03 : 0.04 + Math.random() * 0.02
+                });
+                i++;
+            }
+        } else if (type === 'misaligned') {
+            const baseFreq = 0.02;
+            let i = 0;
+            for (const colorKey in colors) {
+                const color = colors[colorKey];
+                const calm = i < 2; // Top 2 waves (Ananda, Vijnana) are calm
                 
+                let waveProps = {
+                    offset: -60 + i * 30,
+                    frequency: calm ? baseFreq : baseFreq * (0.8 + Math.random() * 1.5),
+                    phase: calm ? 0 : Math.random() * Math.PI * 4,
+                    color,
+                    speed: calm ? 0.02 : 0.05 + Math.random() * 0.03
+                };
+
+                if (calm) {
+                    waveProps.amplitude = 15; 
+                } else {
+                    waveProps.baseAmplitude = 20 + Math.random() * 5;
+                    waveProps.ampModAmount = 8 + Math.random() * 12;
+                    waveProps.ampModSpeed = 0.03 + Math.random() * 0.05;
+                    waveProps.ampPhase = Math.random() * Math.PI * 2;
+                }
+                
+                waves.push(waveProps);
+                i++;
+            }
+        }
+
+        function drawFrame() {
+            ctx.clearRect(0, 0, width, height);
+
+            for (const wave of waves) {
+                ctx.beginPath();
+                ctx.strokeStyle = wave.color;
+                ctx.lineWidth = 2.5;
+
+                let currentAmplitude;
+                if (wave.baseAmplitude !== undefined) {
+                    currentAmplitude = wave.baseAmplitude + 
+                                       (Math.sin(wave.ampPhase) * wave.ampModAmount);
+                    wave.ampPhase += wave.ampModSpeed;
+                } else {
+                    currentAmplitude = wave.amplitude;
+                }
+
                 for (let x = 0; x < width; x++) {
-                    const y = centerY + offset + Math.sin(x * frequency + phaseShift) * amplitude;
-                    if (x === 0) {
-                        ctx.moveTo(x, y);
-                    } else {
-                        ctx.lineTo(x, y);
-                    }
+                    const y = centerY + wave.offset + 
+                              Math.sin(x * wave.frequency + wave.phase) * currentAmplitude; 
+                    
+                    if (x === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
                 }
                 ctx.stroke();
+
+                wave.phase += wave.speed;
             }
 
-            // Function to set canvas sizes
-            function handleResize() {
-                [harmoniousCanvas, partialCanvas, misalignedCanvas].forEach(canvas => {
-                    canvas.width = canvas.offsetWidth;
-                    canvas.height = canvas.offsetHeight;
-                });
-            }
-            
-            // Set initial size and add resize listener
-            handleResize();
-            window.addEventListener('resize', handleResize);
+            window.animationFrameIds[canvasId] = requestAnimationFrame(drawFrame);
+        }
 
-            // The main animation loop
-            function animate(time) {
-                const baseFreq = 0.03;
-                const speed = time * 0.0015; // Base speed for animation phase
+        drawFrame();
+    }
 
-                // Clear all canvases
-                hCtx.clearRect(0, 0, harmoniousCanvas.width, harmoniousCanvas.height);
-                pCtx.clearRect(0, 0, partialCanvas.width, partialCanvas.height);
-                mCtx.clearRect(0, 0, misalignedCanvas.width, misalignedCanvas.height);
+    // Initial draw
+    animateWaves('harmonious-canvas', 'harmonious');
+    animateWaves('partial-canvas', 'partial');
+    animateWaves('misaligned-canvas', 'misaligned');
 
-                // --- 1. Draw Harmonious ---
-                // All waves share the same frequency and animated phase shift
-                const hPhase = speed;
-                drawWave(hCtx, harmoniousCanvas.width, harmoniousCanvas.height, -60, 15, baseFreq, hPhase, colors.ananda, 3);
-                drawWave(hCtx, harmoniousCanvas.width, harmoniousCanvas.height, -30, 15, baseFreq, hPhase, colors.vijnana, 3);
-                drawWave(hCtx, harmoniousCanvas.width, harmoniousCanvas.height, 0, 20, baseFreq, hPhase, colors.mano, 2.5);
-                drawWave(hCtx, harmoniousCanvas.width, harmoniousCanvas.height, 30, 20, baseFreq, hPhase, colors.prana, 2.5);
-                drawWave(hCtx, harmoniousCanvas.width, harmoniousCanvas.height, 60, 20, baseFreq, hPhase, colors.anna, 2.5);
-                
-                // --- 2. Draw Partial ---
-                // Top two are aligned. Lower three have slightly different frequencies and static phase offsets
-                const pPhase = speed;
-                drawWave(pCtx, partialCanvas.width, partialCanvas.height, -60, 15, baseFreq, pPhase, colors.ananda, 3);
-                drawWave(pCtx, partialCanvas.width, partialCanvas.height, -30, 15, baseFreq, pPhase, colors.vijnana, 3);
-                drawWave(pCtx, partialCanvas.width, partialCanvas.height, 0, 22, baseFreq * 1.1, pPhase + 0.8, colors.mano, 2.5);
-                drawWave(pCtx, partialCanvas.width, partialCanvas.height, 30, 24, baseFreq * 0.95, pPhase - 1.2, colors.prana, 2.5);
-                drawWave(pCtx, partialCanvas.width, partialCanvas.height, 60, 20, baseFreq * 1.05, pPhase + 1.5, colors.anna, 2.5);
-                
-                // --- 3. Draw Misaligned ---
-                // Top two are aligned. Lower three have chaotic, different frequencies and *different animation speeds*
-                const mPhase = speed;
-                drawWave(mCtx, misalignedCanvas.width, misalignedCanvas.height, -60, 15, baseFreq, mPhase, colors.ananda, 3);
-                drawWave(mCtx, misalignedCanvas.width, misalignedCanvas.height, -30, 15, baseFreq, mPhase, colors.vijnana, 3);
-                drawWave(mCtx, misalignedCanvas.width, misalignedCanvas.height, 0, 30, 0.05, (time * 0.002) + 2.5, colors.mano, 2.5);
-                drawWave(mCtx, misalignedCanvas.width, misalignedCanvas.height, 30, 28, 0.025, (time * 0.0008) - 3.8, colors.prana, 2.5);
-                drawWave(mCtx, misalignedCanvas.width, misalignedCanvas.height, 60, 32, 0.04, (time * 0.0022) + 5.2, colors.anna, 2.5);
+    // Handle resize
+    function debounce(func, wait = 100) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                func.apply(this, args);
+            }, wait);
+        };
+    }
 
-                // Request the next frame
-                requestAnimationFrame(animate);
-            }
+    const debouncedResize = debounce(() => {
+        animateWaves('harmonious-canvas', 'harmonious');
+        animateWaves('partial-canvas', 'partial');
+        animateWaves('misaligned-canvas', 'misaligned');
+    }, 250);
 
-            // Start the animation loop
-            animate(0);
-        });
+    window.addEventListener('resize', debouncedResize);
+    
     </script>
 </body>
 </html>
