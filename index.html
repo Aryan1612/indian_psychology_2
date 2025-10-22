@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pancha Kosha Alignment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .sheaths-legend {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding: 20px 0;
+        }
+        
+        .sheath-label {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 8px 0;
+            color: white;
+            font-weight: 500;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .sheath-label.ananda {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        }
+        
+        .sheath-label.vijnana {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        }
+        
+        .sheath-label.mano {
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+        }
+        
+        .sheath-label.prana {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .sheath-label.anna {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .devanagari {
+            font-size: 0.9em;
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        .english {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+        
+        .columns-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+        
+        .column {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        
+        .column-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .column-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .column-caption {
+            font-size: 0.95em;
+            color: #7f8c8d;
+            font-style: italic;
+            line-height: 1.4;
+        }
+        
+        .wave-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            height: 300px;
+        }
+        
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .characteristics, .consequences {
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+        
+        .text-content {
+            color: #5a6c7d;
+            line-height: 1.7;
+            font-size: 0.95em;
+        }
+        
+        .text-content li {
+            margin-bottom: 6px;
+        }
+        
+        .bottom-note {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            line-height: 1.8;
+            font-size: 1.05em;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .harmonious { border-top: 4px solid #27ae60; }
+        .partial { border-top: 4px solid #f39c12; }
+        .misaligned { border-top: 4px solid #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Alignment of the Sheaths</h1>
+        <div class="subtitle">Pancha Kosha in Indian Psychology</div>
+        
+        <div class="main-layout">
+            <div class="sheaths-legend">
+                <div class="sheath-label ananda">
+                    <span class="devanagari">आनन्दमय कोश</span>
+                    <span class="english">Ānandamaya (Bliss)</span>
+                </div>
+                <div class="sheath-label vijnana">
+                    <span class="devanagari">विज्ञानमय कोश</span>
+                    <span class="english">Vijñānamaya (Knowledge)</span>
+                </div>
+                <div class="sheath-label mano">
+                    <span class="devanagari">मनोमय कोश</span>
+                    <span class="english">Manomaya (Mind)</span>
+                </div>
+                <div class="sheath-label prana">
+                    <span class="devanagari">प्राणमय कोश</span>
+                    <span class="english">Prāṇamaya (Vital Energy)</span>
+                </div>
+                <div class="sheath-label anna">
+                    <span class="devanagari">अन्नमय कोश</span>
+                    <span class="english">Annamaya (Physical Body)</span>
+                </div>
+            </div>
+            
+            <div class="columns-grid">
+                <div class="column harmonious">
+                    <div class="column-header">
+                        <div class="column-title">A — Harmonious</div>
+                        <div class="column-caption">"Mind, energy, and body are guided by knowledge and bliss"</div>
+                    </div>
+                    
+                    <div class="wave-container">
+                        <canvas id="harmonious-canvas"></canvas>
+                    </div>
+                    
+                    <div class="characteristics">
+                        <div class="section-title">Characteristics:</div>
+                        <div class="text-content">
+                            Emotionally balanced, clear-thinking, grounded. Calm presence with inner confidence and compassion. Acts with purpose and awareness, unaffected by minor disturbances.
+                        </div>
+                    </div>
+                    
+                    <div class="consequences">
+                        <div class="section-title">Consequences:</div>
+                        <div class="text-content">
+                            Deep inner peace, physical vitality, creativity, and resilience. Perfect harmony between thought, feeling, and action.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column partial">
+                    <div class="column-header">
+                        <div class="column-title">B — Partially Harmonious</div>
+                        <div class="column-caption">"Some alignment exists, but the mind and energy fluctuate"</div>
+                    </div>
+                    
+                    <div class="wave-container">
+                        <canvas id="partial-canvas"></canvas>
+                    </div>
+                    
+                    <div class="characteristics">
+                        <div class="section-title">Characteristics:</div>
+                        <div class="text-content">
+                            Self-aware but inconsistent in applying insight. Mood swings, scattered attention, and emotional reactivity. Alternates between clarity and confusion.
+                        </div>
+                    </div>
+                    
+                    <div class="consequences">
+                        <div class="section-title">Consequences:</div>
+                        <div class="text-content">
+                            Occasional peace but easily disturbed by stress. Energy leakage, mild anxiety, fatigue, and unstable motivation.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column misaligned">
+                    <div class="column-header">
+                        <div class="column-title">C — Misaligned</div>
+                        <div class="column-caption">"Body, energy, and mind act independently, disconnected from higher awareness"</div>
+                    </div>
+                    
+                    <div class="wave-container">
+                        <canvas id="misaligned-canvas"></canvas>
+                    </div>
+                    
+                    <div class="characteristics">
+                        <div class="section-title">Characteristics:</div>
+                        <div class="text-content">
+                            Restless, ego-driven, impulsive, emotionally turbulent. Prone to overthinking or apathy, lacks direction. Identifies only with physical or emotional self.
+                        </div>
+                    </div>
+                    
+                    <div class="consequences">
+                        <div class="section-title">Consequences:</div>
+                        <div class="text-content">
+                            Chronic stress, confusion, conflict, and dissatisfaction. Physical ailments, lack of purpose, and emotional instability.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bottom-note">
+            In Indian psychology, spiritual and psychological growth means progressively aligning the lower sheaths — body (Anna), energy (Prāṇa), and mind (Manas) — under the guidance of higher consciousness (Vijñāna and Ānanda). When fully aligned, a person experiences balance, wisdom, and bliss.
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get all canvases and contexts
+            const harmoniousCanvas = document.getElementById('harmonious-canvas');
+            const hCtx = harmoniousCanvas.getContext('2d');
+            
+            const partialCanvas = document.getElementById('partial-canvas');
+            const pCtx = partialCanvas.getContext('2d');
+            
+            const misalignedCanvas = document.getElementById('misaligned-canvas');
+            const mCtx = misalignedCanvas.getContext('2d');
+
+            // Colors from the legend
+            const colors = {
+                ananda: '#f6d365',
+                vijnana: '#84fab0',
+                mano: '#5ca3d9',
+                prana: '#00d4ff',
+                anna: '#38f9d7'
+            };
+
+            // Reusable function to draw a single wave
+            function drawWave(ctx, width, height, offset, amplitude, frequency, phaseShift, color, lineWidth) {
+                const centerY = height / 2;
+                ctx.beginPath();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = lineWidth;
+                
+                for (let x = 0; x < width; x++) {
+                    const y = centerY + offset + Math.sin(x * frequency + phaseShift) * amplitude;
+                    if (x === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+            }
+
+            // Function to set canvas sizes
+            function handleResize() {
+                [harmoniousCanvas, partialCanvas, misalignedCanvas].forEach(canvas => {
+                    canvas.width = canvas.offsetWidth;
+                    canvas.height = canvas.offsetHeight;
+                });
+            }
+            
+            // Set initial size and add resize listener
+            handleResize();
+            window.addEventListener('resize', handleResize);
+
+            // The main animation loop
+            function animate(time) {
+                const baseFreq = 0.03;
+                const speed = time * 0.0015; // Base speed for animation phase
+
+                // Clear all canvases
+                hCtx.clearRect(0, 0, harmoniousCanvas.width, harmoniousCanvas.height);
+                pCtx.clearRect(0, 0, partialCanvas.width, partialCanvas.height);
+                mCtx.clearRect(0, 0, misalignedCanvas.width, misalignedCanvas.height);
+
+                // --- 1. Draw Harmonious ---
+                // All waves share the same frequency and animated phase shift
+                const hPhase = speed;
+                drawWave(hCtx, harmoniousCanvas.width, harmoniousCanvas.height, -60, 15, baseFreq, hPhase, colors.ananda, 3);
+                drawWave(hCtx, harmoniousCanvas.width, harmoniousCanvas.height, -30, 15, baseFreq, hPhase, colors.vijnana, 3);
+                drawWave(hCtx, harmoniousCanvas.width, harmoniousCanvas.height, 0, 20, baseFreq, hPhase, colors.mano, 2.5);
+                drawWave(hCtx, harmoniousCanvas.width, harmoniousCanvas.height, 30, 20, baseFreq, hPhase, colors.prana, 2.5);
+                drawWave(hCtx, harmoniousCanvas.width, harmoniousCanvas.height, 60, 20, baseFreq, hPhase, colors.anna, 2.5);
+                
+                // --- 2. Draw Partial ---
+                // Top two are aligned. Lower three have slightly different frequencies and static phase offsets
+                const pPhase = speed;
+                drawWave(pCtx, partialCanvas.width, partialCanvas.height, -60, 15, baseFreq, pPhase, colors.ananda, 3);
+                drawWave(pCtx, partialCanvas.width, partialCanvas.height, -30, 15, baseFreq, pPhase, colors.vijnana, 3);
+                drawWave(pCtx, partialCanvas.width, partialCanvas.height, 0, 22, baseFreq * 1.1, pPhase + 0.8, colors.mano, 2.5);
+                drawWave(pCtx, partialCanvas.width, partialCanvas.height, 30, 24, baseFreq * 0.95, pPhase - 1.2, colors.prana, 2.5);
+                drawWave(pCtx, partialCanvas.width, partialCanvas.height, 60, 20, baseFreq * 1.05, pPhase + 1.5, colors.anna, 2.5);
+                
+                // --- 3. Draw Misaligned ---
+                // Top two are aligned. Lower three have chaotic, different frequencies and *different animation speeds*
+                const mPhase = speed;
+                drawWave(mCtx, misalignedCanvas.width, misalignedCanvas.height, -60, 15, baseFreq, mPhase, colors.ananda, 3);
+                drawWave(mCtx, misalignedCanvas.width, misalignedCanvas.height, -30, 15, baseFreq, mPhase, colors.vijnana, 3);
+                drawWave(mCtx, misalignedCanvas.width, misalignedCanvas.height, 0, 30, 0.05, (time * 0.002) + 2.5, colors.mano, 2.5);
+                drawWave(mCtx, misalignedCanvas.width, misalignedCanvas.height, 30, 28, 0.025, (time * 0.0008) - 3.8, colors.prana, 2.5);
+                drawWave(mCtx, misalignedCanvas.width, misalignedCanvas.height, 60, 32, 0.04, (time * 0.0022) + 5.2, colors.anna, 2.5);
+
+                // Request the next frame
+                requestAnimationFrame(animate);
+            }
+
+            // Start the animation loop
+            animate(0);
+        });
+    </script>
+</body>
+</html>
